@@ -7,6 +7,11 @@ export interface ValidationTest {
   feedback: string;
 }
 
+export interface ValidationTestResult {
+  isValid: boolean;
+  feedback?: string;
+}
+
 export interface Field {
   label?: string;
   tests?: ValidationTest[];
@@ -46,7 +51,7 @@ export interface FieldProps {
   onChangeValue: (fieldName: string, value: any) => void;
   error: boolean;
   helperText: string;
-  // [propName: string]: any;
+  [propName: string]: any;
 }
 
 export interface InitFormax {
@@ -56,13 +61,15 @@ export interface InitFormax {
 }
 
 export interface Formax {
-  fields: {
+  fieldProps: {
     [fieldName: string]: FieldProps;
   };
+  fieldValues: FieldValues;
+  fieldErrors: FieldErrors;
   form: {
+    validate: (tests: ValidationTest[]) => ValidationTestResult;
     isSubmitting: boolean;
     reset: () => void;
-    submitForm: (callback: () => void) => void;
-    fieldValues: FieldValues;
+    submit: (callback: () => void) => void;
   };
 }

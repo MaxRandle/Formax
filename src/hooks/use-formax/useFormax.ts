@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { mapObjectToObject } from "./helpers";
+import { mapObjectToObject, runValidationTests } from "./helpers";
 import {
   FieldErrors,
   FieldHelpers,
@@ -8,6 +8,7 @@ import {
   FieldValues,
   Formax,
   InitFormax,
+  ValidationTestResult,
 } from "./types";
 
 export function useFormax({
@@ -52,15 +53,13 @@ export function useFormax({
     const newFieldHelpers: FieldHelpers = {};
 
     fieldNamesToValidate.forEach((fieldNameToValidate) => {
-      const fieldToValidate = schema.fields[fieldNameToValidate];
       // goes through all the validation tests and returns feedback for the first test that fails
-      fieldToValidate.tests?.some((test) => {
-        const isValid = test.exec(fieldValues);
-        newFieldErrors[fieldNameToValidate] = isValid;
-        newFieldHelpers[fieldNameToValidate] = isValid ? null : test.feedback;
-
-        return !isValid;
-      });
+      const { isValid, feedback } = runValidationTests(
+        schema.fields[fieldNameToValidate].tests || [],
+        fieldValues
+      );
+      newFieldErrors[fieldNameToValidate] = isValid;
+      newFieldHelpers[fieldNameToValidate] = feedback;
     });
 
     // update form errors and form helpers
@@ -68,8 +67,30 @@ export function useFormax({
     setFieldHelpers((s) => ({ ...s, ...newFieldHelpers }));
   };
 
+  const globalValidation = (): ValidationTestResult =>
+    runValidationTests(schema.form?.tests || [], fieldValues);
+
+  const resetForm = () => {
+    setFieldValues(initialValues);
+    setFieldIsTouched(fieldsFalse);
+    setFieldErrors(fieldsFalse);
+    setFieldHelpers({});
+  };
+
+  const submitForm = async (callback: () => void) => {
+    setIsSubmitting(true);
+    try {
+      await onSubmit();
+      callback();
+    } catch (err: unknown) {
+      throw err;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return {
-    fields: mapObjectToObject(
+    fieldProps: mapObjectToObject(
       schema.fields,
       (fieldName, field): FieldProps => ({
         name: fieldName,
@@ -82,26 +103,13 @@ export function useFormax({
         ...field.otherProps,
       })
     ),
+    fieldValues,
+    fieldErrors,
     form: {
-      fieldValues,
+      validate: globalValidation,
       isSubmitting,
-      reset: () => {
-        setFieldValues(initialValues);
-        setFieldIsTouched(fieldsFalse);
-        setFieldErrors(fieldsFalse);
-        setFieldHelpers({});
-      },
-      submitForm: async (callback) => {
-        setIsSubmitting(true);
-        try {
-          await onSubmit();
-          callback();
-        } catch (err: unknown) {
-          throw err;
-        } finally {
-          setIsSubmitting(false);
-        }
-      },
+      reset: resetForm,
+      submit: submitForm,
     },
   };
 }
