@@ -7,7 +7,7 @@ import "./box.css";
 type Style = TemplateStringsArray | CSSObject | InterpolationFunction<any>;
 
 interface IProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   as?: React.ElementType;
   style?: Style;
   sm?: Style;
@@ -28,6 +28,7 @@ export const Box: React.FC<IProps> = ({
   xl,
   xxl,
   container,
+  ...props
 }) => {
   const Component = as || "div";
   const { breakpoint } = useBreakpoint();
@@ -47,5 +48,9 @@ export const Box: React.FC<IProps> = ({
 
   const StyledComponent = styled(Component)(styles);
 
-  return <StyledComponent style={styles}>{children}</StyledComponent>;
+  return (
+    <StyledComponent style={styles} {...props}>
+      {children}
+    </StyledComponent>
+  );
 };
