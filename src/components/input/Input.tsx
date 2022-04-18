@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useImperativeHandle, useRef } from "react";
 import styled from "styled-components";
 
 export interface IInputProps
@@ -27,6 +27,8 @@ const StyledInput = styled.input<Pick<IInputProps, "isError">>`
   letter-spacing: 0.025rem;
 `;
 
-export const Input: React.FC<IInputProps> = ({ ...props }) => {
-  return <StyledInput {...props} />;
-};
+export const Input = React.forwardRef(({ ...props }: IInputProps, ref) => {
+  const innerRef = useRef<HTMLInputElement>(null);
+  useImperativeHandle(ref, () => innerRef.current as HTMLInputElement);
+  return <StyledInput ref={innerRef} {...props} />;
+});

@@ -18,17 +18,17 @@ const StyledInputHelperText = styled(InputHelperText)`
   margin-top: 0.125rem;
 `;
 
-export const OnboardingForm: React.FC<IInputControlProps> = ({
-  forwardedRef,
-  ...props
-}) => {
-  const inputRef = useRef();
-  useImperativeHandle(forwardedRef, () => inputRef.current);
-  return (
-    <div {...props}>
-      <InputLabel {...props} />
-      <StyledInput ref={inputRef} {...props} />
-      <StyledInputHelperText {...props} />
-    </div>
-  );
-};
+export const InputControl = React.forwardRef(
+  ({ ...props }: IInputControlProps, ref) => {
+    const innerRef = useRef();
+    useImperativeHandle(ref, () => innerRef.current);
+
+    return (
+      <div {...props}>
+        <InputLabel {...props} />
+        <StyledInput ref={innerRef} {...props} />
+        <StyledInputHelperText {...props} />
+      </div>
+    );
+  }
+);
