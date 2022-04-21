@@ -1,34 +1,44 @@
-import React, { useImperativeHandle, useRef } from "react";
+import React from "react";
 import styled from "styled-components";
-import { IInputProps, Input } from "./Input";
-import { IInputHelperTextProps, InputHelperText } from "./InputHelperText";
-import { IInputLabelProps, InputLabel } from "./InputLabel";
+import { IInputProps } from "./Input";
+import { IInputHelperTextProps } from "./InputHelperText";
+import { IInputLabelProps } from "./InputLabel";
 
-type ISubProps = IInputHelperTextProps & IInputLabelProps & IInputProps;
+type IInputControlProps = IInputHelperTextProps &
+  IInputLabelProps &
+  IInputProps;
 
-interface IInputControlProps extends ISubProps {
-  forwardedRef: React.Ref<unknown>;
-}
-
-const StyledInput = styled(Input)`
-  margin-top: 0.25rem;
+const StyledInputControl = styled.div`
+  width: 100%;
+  position: relative;
 `;
 
-const StyledInputHelperText = styled(InputHelperText)`
-  margin-top: 0.125rem;
-`;
+export const InputControl: React.FC<IInputControlProps> = ({
+  children,
+  isDisabled,
+  isError,
+  isRequired,
+  ...props
+}: IInputControlProps) => {
+  const childrenWithProps = React.Children.map(
+    children,
+    (child: React.ReactNode) => {
+      if (React.isValidElement(child)) {
+        return React.cloneElement(
+          child as React.ReactElement<IInputControlProps>,
+          {
+            isDisabled,
+            isError,
+            isRequired,
+          }
+        );
+      } else {
+        return child;
+      }
+    }
+  );
 
-export const InputControl = React.forwardRef(
-  ({ ...props }: IInputControlProps, ref) => {
-    const innerRef = useRef();
-    useImperativeHandle(ref, () => innerRef.current);
-
-    return (
-      <div {...props}>
-        <InputLabel {...props} />
-        <StyledInput ref={innerRef} {...props} />
-        <StyledInputHelperText {...props} />
-      </div>
-    );
-  }
-);
+  return (
+    <StyledInputControl {...props}>{childrenWithProps}</StyledInputControl>
+  );
+};

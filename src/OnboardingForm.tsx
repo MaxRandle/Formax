@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Box, Input, InputHelperText, InputLabel } from "./components";
+import { InputControl } from "./components/input/InputControl";
 
 interface IProps {
   // className?: string;
@@ -24,11 +25,11 @@ export const OnboardingForm: React.FC<IProps> = ({ ...props }) => {
       }}
       {...props}
     >
-      <div>
-        <InputLabel isRequired>{`something`}</InputLabel>
+      <InputControl isRequired isError>
+        <InputLabel>{`something`}</InputLabel>
         <StyledInput />
-        <StyledInputHelperText isError>something else</StyledInputHelperText>
-      </div>
+        <StyledInputHelperText>something else</StyledInputHelperText>
+      </InputControl>
       <Input />
       <Input />
       <Input />

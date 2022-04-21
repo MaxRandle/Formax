@@ -7,6 +7,7 @@ export interface IInputLabelProps {
 
 const StyledDiv = styled.div`
   margin-left: 8px;
+  margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
 `;
