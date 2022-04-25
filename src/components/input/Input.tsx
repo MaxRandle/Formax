@@ -9,6 +9,8 @@ export interface IInputProps
 }
 
 const StyledInput = styled.input<Pick<IInputProps, "isError">>`
+  background-color: transparent;
+  color: var(--text-base-color);
   box-sizing: border-box;
   width: 100%;
   outline: 0;
@@ -16,12 +18,14 @@ const StyledInput = styled.input<Pick<IInputProps, "isError">>`
   appearance: none;
   font-size: 1rem;
 
-  border: 1px solid
-    var(
-      ${({ isError }) =>
-        isError ? `--border-error-color` : `--border-primary-color`}
-    );
-  border-radius: 4px;
+  border: 2px solid;
+  border-color: var(--border-base-color);
+  ${({ isError }) => isError && `border-color: var(--border-error-color);`}
+
+  &:focus {
+    border-color: var(--border-focus-color);
+  }
+  border-radius: 6px;
   padding: 0.5rem;
 
   letter-spacing: 0.025rem;

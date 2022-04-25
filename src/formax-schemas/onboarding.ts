@@ -1,9 +1,21 @@
 import { Schema } from "../hooks/use-formax";
 
+export interface IFields {
+  firstName: string;
+  preferredName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export const schema: Schema = {
   fields: {
     firstName: {
       label: "First Name",
+    },
+    preferredName: {
+      label: "Preferred Name",
     },
     lastName: {
       label: "Last Name",

@@ -1,3 +1,5 @@
+import React, { ChangeEventHandler, ReactNode } from "react";
+
 export interface KeySignature {
   key: string | number | symbol;
 }
@@ -14,19 +16,16 @@ export interface ValidationTestResult {
 
 export interface Field {
   label?: string;
+  required?: boolean;
   tests?: ValidationTest[];
   covalidate?: string[];
-  otherProps?: { [propName: string]: any };
+  component?: ReactNode;
 }
 
-export interface FieldValues {
-  [fieldName: string]: any;
-}
+export type FieldValues = Record<string, any>;
 
 export interface Schema {
-  fields: {
-    [fieldName: string]: Field;
-  };
+  fields: Record<string, Field>;
   form?: {
     tests?: ValidationTest[];
   };
@@ -44,26 +43,27 @@ export interface FieldHelpers {
   [fieldName: string]: string | undefined | null;
 }
 
-export interface FieldProps {
-  name: string;
-  label: string;
-  value: any;
-  onChangeValue: (fieldName: string, value: any) => void;
-  error: boolean;
-  helperText: string;
-  [propName: string]: any;
-}
-
 export interface InitFormax {
   schema: Schema;
-  initialValues: FieldValues;
-  onSubmit: () => Promise<null>;
+  initialValues?: FieldValues;
+  onSubmit: Function;
 }
 
-export interface Formax {
-  fieldProps: {
-    [fieldName: string]: FieldProps;
+export interface FieldProps {
+  label: string;
+  required: boolean;
+  inputProps: {
+    name: string;
+    value: any;
+    onChange: ChangeEventHandler<HTMLInputElement>;
+    ref: React.MutableRefObject<null>;
   };
+  error: boolean;
+  helperText: string;
+  Component?: ReactNode;
+}
+export interface FormaxReturn<IFields = {}> {
+  fieldProps: Record<keyof IFields, FieldProps>;
   fieldValues: FieldValues;
   fieldErrors: FieldErrors;
   form: {

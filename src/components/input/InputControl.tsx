@@ -23,7 +23,7 @@ export const InputControl: React.FC<IInputControlProps> = ({
   const childrenWithProps = React.Children.map(
     children,
     (child: React.ReactNode) => {
-      if (React.isValidElement(child)) {
+      if (React.isValidElement(child) && child.type !== "input") {
         return React.cloneElement(
           child as React.ReactElement<IInputControlProps>,
           {

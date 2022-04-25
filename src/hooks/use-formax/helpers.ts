@@ -1,10 +1,10 @@
 import { FieldValues, ValidationTest, ValidationTestResult } from "./types";
 
 export function mapObjectToObject(
-  obj: { [key: string]: any },
+  obj: Record<string | number | symbol, any>,
   mapper: (objectKey: string, objectValue?: any) => any
 ) {
-  const returnObj: { [key: string]: any } = {};
+  const returnObj: Record<string | number | symbol, any> = {};
 
   Object.keys(obj).forEach((key) => {
     returnObj[key] = mapper(key, obj[key]);

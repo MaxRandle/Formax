@@ -10,8 +10,7 @@ const StyledDiv = styled.div<Pick<IInputHelperTextProps, "isError">>`
   margin-left: 0.5rem;
   margin-top: 0.125rem;
   color: var(
-    ${({ isError }) =>
-      isError ? `--text-error-color` : `--text-primary-color`}
+    ${({ isError }) => (isError ? `--text-error-color` : `--text-base-color`)}
   );
 `;
 

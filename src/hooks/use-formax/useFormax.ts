@@ -6,16 +6,16 @@ import {
   FieldIsTouched,
   FieldProps,
   FieldValues,
-  Formax,
+  FormaxReturn,
   InitFormax,
   ValidationTestResult,
 } from "./types";
 
-export function useFormax({
+export function useFormax<IFields>({
   schema,
-  initialValues,
+  initialValues = {},
   onSubmit,
-}: InitFormax): Formax {
+}: InitFormax): FormaxReturn<IFields> {
   const fieldsFalse = Object.keys(schema.fields).reduce<FieldIsTouched>(
     (acc, cur) => ({
       ...acc,
@@ -93,11 +93,13 @@ export function useFormax({
     fieldProps: mapObjectToObject(
       schema.fields,
       (fieldName, field): FieldProps => ({
-        name: fieldName,
         label: field.label,
-        value: fieldValues[fieldName],
-        onChangeValue: (newValue: any) =>
-          handleChangeValue(fieldName, newValue),
+        required: Boolean(field.required),
+        inputProps: {
+          name: fieldName,
+          value: fieldValues[fieldName],
+          onChange: (event) => handleChangeValue(fieldName, event.target.value),
+        },
         error: fieldIsTouched[fieldName] && fieldErrors[fieldName],
         helperText: fieldHelpers[fieldName],
         ...field.otherProps,
