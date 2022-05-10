@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { mapObjectToObject, runValidationTests } from "./helpers";
 import {
   FieldErrors,
@@ -24,16 +24,35 @@ export function useFormax<IFields>({
     {}
   );
 
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
   const [fieldValues, setFieldValues] = useState<FieldValues>(initialValues);
-
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>(fieldsFalse);
+  const [fieldHelpers, setFieldHelpers] = useState<FieldHelpers>({});
   const [fieldIsTouched, setFieldIsTouched] =
     useState<FieldIsTouched>(fieldsFalse);
 
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>(fieldsFalse);
+  // const fieldProps = useMemo(
+  //   () =>
+  //     mapObjectToObject(
+  //       schema.fields,
+  //       (fieldName, field): FieldProps => ({
+  //         label: field.label,
+  //         required: Boolean(field.required),
+  //         inputProps: {
+  //           name: fieldName,
+  //           value: fieldValues[fieldName],
+  //           onChange: (event) =>
+  //             handleChangeValue(fieldName, event.target.value),
+  //         },
+  //         error: fieldIsTouched[fieldName] && fieldErrors[fieldName],
+  //         helperText: fieldHelpers[fieldName],
+  //         ...field.otherProps,
+  //       })
+  //     ),
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [schema.fields]
+  // );
 
-  const [fieldHelpers, setFieldHelpers] = useState<FieldHelpers>({});
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleChangeValue = (fieldName: string, fieldValue: any) => {
     const currentField = schema.fields[fieldName];
@@ -89,7 +108,29 @@ export function useFormax<IFields>({
     }
   };
 
+  console.log("formax");
+
+  /*
+    mapObjectToObject(
+      schema.fields,
+      (fieldName, field): FieldProps => ({
+        label: field.label,
+        required: Boolean(field.required),
+        inputProps: {
+          name: fieldName,
+          value: fieldValues[fieldName],
+          onChange: (event) =>
+            handleChangeValue(fieldName, event.target.value),
+        },
+        error: fieldIsTouched[fieldName] && fieldErrors[fieldName],
+        helperText: fieldHelpers[fieldName],
+        ...field.otherProps,
+      })
+    )
+  */
+
   return {
+    // fieldProps: fieldProps,
     fieldProps: mapObjectToObject(
       schema.fields,
       (fieldName, field): FieldProps => ({

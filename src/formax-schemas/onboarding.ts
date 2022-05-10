@@ -13,18 +13,22 @@ export const schema: Schema = {
   fields: {
     firstName: {
       label: "First Name",
+      required: true,
     },
     preferredName: {
       label: "Preferred Name",
     },
     lastName: {
       label: "Last Name",
+      required: true,
     },
     email: {
       label: "Email Address",
+      required: true,
     },
     password: {
       label: "Password",
+      required: true,
       tests: [
         {
           exec: (formValues) => formValues.password.length >= 8,
@@ -51,6 +55,7 @@ export const schema: Schema = {
     },
     confirmPassword: {
       label: "Confirm Password",
+      required: true,
       tests: [
         {
           exec: (formValues) =>
